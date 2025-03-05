@@ -5,6 +5,7 @@ import store from './store'
 import {
     Button,
     Input,
+    InputNumber,
     Table,
     TableColumn,
     Dialog,
@@ -88,6 +89,7 @@ Vue.use(Badge);
 Vue.use(Loading);
 Vue.use(Button);
 Vue.use(Input);
+Vue.use(InputNumber);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(Dialog);
@@ -107,11 +109,19 @@ import {deleteRequest} from "./utils/api";
 import {getRequest} from "./utils/api";
 import {initMenu} from "./utils/menus";
 import 'font-awesome/css/font-awesome.min.css'
+import { saveAs } from 'file-saver';
+import VueMapbox  from 'vue-mapbox'
+import Mapboxgl from 'mapbox-gl';//mapbox
+import 'mapbox-gl/dist/mapbox-gl.css';//mapbox
+Mapboxgl.accessToken = "sk.eyJ1Ijoid2ZlZnNoazU5OSIsImEiOiJjbTd2bmp3bnQwMXMxMnVwcGQ3d3YwcHNpIn0.elfsm2aoFKH6ljCx-M-ToA" //https://account.mapbox.com/auth/signup/
+Vue.use(VueMapbox , { mapboxgl: Mapboxgl })
+Vue.prototype.$saveAs = saveAs;
 
 Vue.prototype.postRequest = postRequest;
 Vue.prototype.postKeyValueRequest = postKeyValueRequest;
 Vue.prototype.putRequest = putRequest;
 Vue.prototype.deleteRequest = deleteRequest;
+Vue.prototype.getRequest = getRequest;
 Vue.prototype.getRequest = getRequest;
 
 Vue.config.productionTip = false

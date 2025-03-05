@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.javaboy.vhr.mapper.GasDatesMapper">
+    <!--结果映射表-->
+    <resultMap id="BaseResultMap" type="org.javaboy.vhr.model.GasDateInfo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="unique_name" property="uniqueName" jdbcType="VARCHAR"/>
+        <result column="original_name" property="originalName" jdbcType="VARCHAR"/>
+        <result column="upload_date" property="uploadDate" jdbcType="DATE"/>
+        <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+        <result column="file_extension" property="fileExtension" jdbcType="VARCHAR"/>
+        <result column="uploader_id" property="uploaderId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--自动生成自增主键，并放入id-->
+    <insert id="insertGasDateInfo" parameterType="org.javaboy.vhr.model.GasDateInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO GasDates_info (unique_name, original_name, upload_date, file_path, file_extension, uploader_id)
+        VALUES (#{uniqueName,jdbcType=VARCHAR}, #{originalName,jdbcType=VARCHAR}, #{uploadDate,jdbcType=DATE}, #{filePath,jdbcType=VARCHAR}, #{fileExtension,jdbcType=VARCHAR}, #{uploaderId,jdbcType=VARCHAR});
+    </insert>
+
+    <!--按页查询-->
+    <select id="getGasDatesByPage" resultMap="BaseResultMap">
+        SELECT * FROM gasdates_info
+        WHERE 1=1
+        <if test="originalname != null and originalname != ''">
+            AND original_name LIKE CONCAT('%', #{originalname}, '%')
+        </if>
+        <if test="beginNum != null">
+            AND id <![CDATA[>=]]> #{beginNum}
+        </if>
+        <if test="endNum != null">
+            AND id <![CDATA[<=]]> #{endNum}
+        </if>
+        <if test="DateScope != null and DateScope.size() == 2">
+            AND upload_date BETWEEN #{DateScope[0]} AND #{DateScope[1]}
+        </if>
+        ORDER BY id ASC
+        LIMIT #{size} OFFSET #{page}
+    </select>
+    <!--查询总数-->
+    <select id="getTotal" resultType="java.lang.Long">
+        SELECT count(*) FROM gasdates_info
+        <where>
+            <if test="originalname != null and originalname != ''">
+                AND original_name LIKE CONCAT('%', #{originalname}, '%')
+            </if>
+            <if test="beginNum != null">
+                AND id >= #{beginNum}
+            </if>
+            <if test="DateScope != null and DateScope.size() == 2">
+            AND upload_date BETWEEN #{DateScope[0]} AND #{DateScope[1]}
+            </if>
+        </where>
+    </select>
+</mapper>

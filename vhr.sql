@@ -446,6 +446,20 @@ CREATE TABLE `sysmsg` (
 
 insert  into `sysmsg`(`id`,`mid`,`type`,`hrid`,`state`) values (57,14,0,3,1),(58,14,0,5,1),(59,14,0,10,1),(60,14,0,11,0),(61,14,0,12,0),(62,15,0,3,1),(63,15,0,5,1),(64,15,0,10,1),(65,15,0,11,0),(66,15,0,12,0),(67,16,0,3,1),(68,16,0,5,1),(69,16,0,10,1),(70,16,0,11,0),(71,16,0,12,0),(72,17,0,3,1),(73,17,0,5,1),(74,17,0,10,1),(75,17,0,11,0),(76,17,0,12,0),(77,18,0,3,1),(78,18,0,5,0),(79,18,0,10,0),(80,18,0,11,0),(81,18,0,12,0);
 
+
+CREATE TABLE GasDates_info (
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '文件记录的唯一ID',
+    unique_name   VARCHAR(255) NOT NULL COMMENT '文件的唯一名称（UUID）',
+    original_name VARCHAR(255) NOT NULL COMMENT '文件的真实名称（用户上传时的名称）',
+    upload_date   DATE NOT NULL COMMENT '文件上传日期',
+    file_path     VARCHAR(500) NOT NULL COMMENT '文件保存路径',
+    file_extension VARCHAR(50) NOT NULL COMMENT '文件后缀（类型）',
+    uploader_id   BIGINT NOT NULL COMMENT '上传者ID',
+    INDEX idx_unique_name (unique_name),
+    INDEX idx_upload_date (upload_date),
+    INDEX idx_uploader_id (uploader_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储上传文件信息的表';
+
 /* Procedure structure for procedure `addDep` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `addDep` */;

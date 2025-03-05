@@ -30,7 +30,10 @@ public class MenuService {
     MenuMapper menuMapper;
     @Autowired
     MenuRoleMapper menuRoleMapper;
+    //Id从哪里来呢，前端传过来的信息是不可信，我们登录的用户信息保存在security，可以从Security里获取登录用户信息
     public List<Menu> getMenusByHrId() {
+        //SecurityContextHolder里面有一个getContext()方法.getAuthentication()它里面的getPrincipal()，
+        // Principal它是当前登录的用户对象，然后强转成Hr对象再获取它里面的id
         return menuMapper.getMenusByHrId(((Hr) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
     }
 

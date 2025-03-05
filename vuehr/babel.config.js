@@ -3,7 +3,7 @@ module.exports = {
         '@vue/app',
         [
             '@babel/preset-env', {
-            modules: false
+            modules: false  // 或者 'commonjs'
         }]
     ],
     plugins: [

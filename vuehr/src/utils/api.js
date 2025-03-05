@@ -49,11 +49,19 @@ export const postKeyValueRequest = (url, params) => {
         }
     });
 }
-export const postRequest = (url, params) => {
+/*export const postRequest = (url, params) => {
     return axios({
         method: 'post',
         url: `${base}${url}`,
         data: params
+    })
+}*/
+export const postRequest = (url, params,responseType = "json") => {
+    return axios({
+        method: 'post',
+        url: `${base}${url}`,
+        data: params,
+        responseType: responseType // 允许传入 responseType 参数
     })
 }
 export const putRequest = (url, params) => {
@@ -63,13 +71,25 @@ export const putRequest = (url, params) => {
         data: params
     })
 }
+
+//vue前端中的封装的GET请求方法，并返回 axios 处理的 Promise。
+export const getRequest = (url, params,responseType = "json") => {
+    return axios({
+        method: 'get',
+        url: `${base}${url}`,//拼接完整的请求地址，base是API的基础路径
+        params: params,//get请求的参数，axio会自动转换为查询字符
+        responseType: responseType // 允许传入 responseType 参数
+    })
+}
+/*
+//vue前端中的封装的GET请求方法，并返回 axios 处理的 Promise。
 export const getRequest = (url, params) => {
     return axios({
         method: 'get',
-        url: `${base}${url}`,
-        params: params
+        url: `${base}${url}`,//拼接完整的请求地址，base是API的基础路径
+        params: params//get请求的参数，axio会自动转换为查询字符
     })
-}
+}*/
 export const deleteRequest = (url, params) => {
     return axios({
         method: 'delete',
