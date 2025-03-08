@@ -367,27 +367,14 @@ export default {
         return;
       }
 
-      const fileData = this.multipleSelection.map(file => ({
-        uniqueName: file.uniqueName,
-        fileExtension: file.fileExtension,
-        originalName: file.originalName,
-        filePath: file.filePath
-      }));
-
       try {
-        if (fileData.length === 1) {
+        if (this.multipleSelection.length === 1) {
           await this.downloadFile(this.multipleSelection[0]); // 处理单个文件下载
         } else {
           // 定义一个空数组来保存流的所有数
           await this.postRequest("/gas/basic/batchDownload", this.multipleSelection, "blob").then(
               response => {
-                if (response || response.data) {
-                  console.log("response为空");
-                  console.log(response.data);
-                  return 0;
-                }
-                const blob = new Blob(response.data, {type: "application/zip"});
-
+                const blob = response.data;
                 // 创建下载链接并触发下载
                 this.$saveAs(blob, "batch_download.zip");
               });
@@ -403,18 +390,18 @@ export default {
 <style>
 /* 可以设置不同的进入和离开动画 */
 /* 设置持续时间和动画函数 */
-.slide-fade-enter-active {
-  transition: all .8s ease;
-}
+  .slide-fade-enter-active {
+    transition: all .8s ease;
+  }
 
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
+  .slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
 
-.slide-fade-enter, .slide-fade-leave-to
+  .slide-fade-enter, .slide-fade-leave-to
   /* .slide-fade-leave-active for below version 2.1.8 */
-{
-  transform: translateX(10px);
-  opacity: 0;
-}
+  {
+    transform: translateX(10px);
+    opacity: 0;
+  }
 </style>
