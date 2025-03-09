@@ -1,6 +1,5 @@
 package org.javaboy.vhr.mapper;
 
-import com.sun.org.apache.xpath.internal.objects.XString;
 import org.apache.ibatis.annotations.Param;
 import org.javaboy.vhr.model.Employee;
 import org.javaboy.vhr.model.GasDateInfo;
