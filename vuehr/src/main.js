@@ -55,6 +55,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.prototype.$ELEMENT = {size: 'small', zIndex: 3000};
 Vue.use(Switch);
+Vue.use(Message);
 Vue.use(CollapseItem);
 Vue.use(Radio);
 Vue.use(RadioGroup);
@@ -101,6 +102,7 @@ Vue.use(Form);
 Vue.use(Tag);
 Vue.prototype.$alert = MessageBox.alert
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$message = Message;
 
 import {postRequest} from "./utils/api";
 import {postKeyValueRequest} from "./utils/api";

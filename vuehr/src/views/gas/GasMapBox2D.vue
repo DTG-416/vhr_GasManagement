@@ -48,7 +48,7 @@
     <!-- 地图部分 -->
     <div id="mapCon"></div>
     <!-- 添加地标对话框 -->
-    <el-dialog title="添加地标" :visible.sync="dialogVisible" width="30%">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
       <el-form :model="landmarkForm" label-width="80px">
         <el-form-item label="标题">
           <el-input v-model="landmarkForm.title"></el-input>
@@ -80,8 +80,9 @@
         <div slot="header">
           <span>地标操作</span>
         </div>
-        <el-button @click="editLandmark(currentLandmark)">编辑</el-button>
+        <el-button @click="editLandmark(currentLandmark);showActions=false">编辑</el-button>
         <el-button type="danger" @click="deleteLandmark(currentLandmark)">删除</el-button>
+        <el-button type="primary" @click="showActions=false">取消</el-button>
       </el-card>
     </div>
 
@@ -114,7 +115,8 @@ export default {
       showActions: false, // 是否显示地标操作
       infoStyle: {}, // 地标信息样式
       actionsStyle: {}, // 地标操作样式
-      currentLandmark:null
+      currentLandmark:null,
+      dialogTitle:"添加地标"
 
     };
   },
@@ -142,6 +144,10 @@ export default {
         } else if (this.currentTool === "area") {
           this.handleAreaMeasurement(e);
         } else if (this.currentTool === "landmarker") {
+          this.landmarkForm = { // 地标表单
+            title: '',
+                description: ''
+          };
           this.showAddLandmarkDialog(e.lngLat);
         }
       });
@@ -276,9 +282,17 @@ export default {
     addLandMarkerWithInfo() {
 
       if (this.landmarkForm.title && this.landmarkForm.description) {
-        this.addLandMarker(this.landmarkLngLat, this.landmarkForm.title, this.landmarkForm.description);
+        if(this.dialogTitle==="编辑地标信息"){
+          const index = this.landmarkers.indexOf(this.currentLandmark);
+          this.landmarkers[index].title = this.landmarkForm.title;
+          this.landmarkers[index].description = this.landmarkForm.description;
+          this.currentLandmark.title=this.landmarkForm.title;
+          this.currentLandmark.description = this.landmarkForm.description;
+        }else {
+          this.addLandMarker(this.landmarkLngLat, this.landmarkForm.title, this.landmarkForm.description);
+          this.currentTool = 'none';
+        }
         this.dialogVisible = false;
-        this.currentTool = 'none';
       }
       else {
         this.$message.error('请输入标题和说明');
@@ -340,8 +354,8 @@ export default {
       console.log('Landmark position:', { x, y });
 
       this.infoStyle = {
-        left: `${x + 150}px`,
-        top: `${y -60}px`
+        left: `${x+90}px`,
+        top: `${y-120}px`
       };
 
 
@@ -353,65 +367,56 @@ export default {
     // 隐藏地标信息
     hideLandmarkInfo() {
       this.showInfo = false;
-      this.showActions = false;
-      this.currentLandmark = null;
+      //this.currentLandmark = null;
     },
 
     // 显示地标操作（删除、编辑）
     showLandmarkActions(landmark) {
       // 创建一个包含地标操作的 div 元素
-      const actionsEl = document.createElement('div');
-      actionsEl.className = 'landmark-actions';
-      actionsEl.innerHTML = `
-    <el-button class="landmark-action-btn" @click="editLandmark(landmark)">编辑</el-button>
-    <el-button type="danger" class="landmark-action-btn" @click="deleteLandmark(landmark)">删除</el-button>
-  `;
-      actionsEl.style.position = 'absolute';
-      actionsEl.style.backgroundColor = 'white';
-      actionsEl.style.border = '1px solid #ccc';
-      actionsEl.style.padding = '5px';
-      actionsEl.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
-      actionsEl.style.zIndex = '1000';
-
       // 计算地标操作框的位置
       const { x, y } = this.map.project(landmark.lngLat);
-      actionsEl.style.left = `${x}px`;
-      actionsEl.style.top = `${y - 60}px`;
-
-      // 将地标操作框添加到地图的 canvas 上
-      this.map.getCanvas().appendChild(actionsEl);
-
-      // 保存当前的操作元素
-      this.currentActionsEl = actionsEl;
-
+      console.log('Actions position:', { x, y });
+      this.actionsStyle = {
+        left: `${x+100}px`,
+        top: `${y-80}px`
+      };
+      this.currentLandmark = landmark;
+      console.log('showLandmarkActions', this.currentLandmark);
+      this.showActions = true;
     },
 
     // 编辑地标
     editLandmark(landmark) {
       console.log('Editing landmark:', landmark);
+      this.dialogTitle="编辑地标信息";
       this.landmarkForm.title = landmark.title;
       this.landmarkForm.description = landmark.description;
       this.dialogVisible = true;
-
     },
 
     // 删除地标
     deleteLandmark(landmark) {
       console.log('Deleting landmark:', landmark);
-      this.landmarkers = this.landmarkers.filter(lm => lm !== landmark);
-      landmark.marker.remove();
-      this.hideLandmarkInfo();
+      const index = this.landmarkers.indexOf(landmark);
+      if (index > -1) {
+        this.landmarkers.splice(index, 1); // 从地标数组中移除地标
 
-    },
+        // 如果当前显示的是被删除的地标的详情或操作，则关闭它们
+        if (this.currentLandmark === landmark) {
+          this.showInfo = false;
+          this.showActions = false;
+          this.currentLandmark = null;
+        }
 
-    // 隐藏地标操作
-    hideLandmarkActions() {
-      if (this.currentActionsEl) {
-        this.currentActionsEl.remove();
-        this.currentActionsEl = null;
+        // 从地图上删除地标标记
+        if (landmark.marker) {
+          landmark.marker.remove();
+        }
+      } else {
+        console.error('地标未找到');
       }
-    },
 
+    },
 
     // 封装的绘制线段方法
     drawLineBetweenPoints(point1,point2,label) {
@@ -530,12 +535,6 @@ export default {
     width: fit-content; /* 根据内容自动调整宽度 */
   }
 
-
-  .landmark-action-btn {
-    cursor: pointer;
-    margin-right: 5px;
-  }
-
   /* 地标元素样式 */
   #marks {
     border: 2px solid red; /* 临时添加边框以便更容易看到地标 */
@@ -543,7 +542,15 @@ export default {
   }
 
   /* 地标信息样式 */
-  .landmark-info {
+  .landmark-info{
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 9999; /* 确保地标信息在最上层 */
+  }
+  .landmark-actions{
     position: absolute;
     background-color: white;
     border: 1px solid #ccc;
