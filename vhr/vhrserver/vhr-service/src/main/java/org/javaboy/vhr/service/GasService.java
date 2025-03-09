@@ -35,4 +35,24 @@ public class GasService {
         bean.setTotal(total);
         return bean;
     }
+
+    @Autowired
+    GasEquManageMapper deviceManageMapper;
+
+    public List<GasEqu> getAllDeviceManage() {
+        return deviceManageMapper.getAllDeviceManage();
+    }
+
+    public Integer addDeviceManage(GasEqu deviceManage) {
+        return deviceManageMapper.insertSelective(deviceManage);
+    }
+
+    public Integer deleteDeviceManageById(Integer id) {
+        return deviceManageMapper.deleteByPrimaryKey(id);
+    }
+
+    public Integer updateDeviceManageById(GasEqu deviceManage) {
+        return deviceManageMapper.updateByPrimaryKeySelective(deviceManage);
+    }
+
 }

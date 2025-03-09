@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.javaboy.vhr.mapper.GasEquManageMapper">
+    <resultMap id="BaseResultMap" type="org.javaboy.vhr.model.GasEqu">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="processArea" property="processArea" jdbcType="VARCHAR"/>
+        <result column="pressureLevel" property="pressureLevel" jdbcType="VARCHAR"/>
+        <result column="specification" property="specification" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">id,name,code,processArea,pressureLevel,specification</sql>
+    <select id="getAllDeviceManage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gasequs_info
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gasequs_info
+        where id = #{id,jdbcType=INTEGER};
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from gasequs_info where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="org.javaboy.vhr.model.GasEqu">
+        insert into gasequs_info (id,name,code,processArea,pressureLevel,specification)
+        values (#{id,jdbcType=INTEGER},#{name,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{processArea,jdbcType=VARCHAR}, #{pressureLevel,jdbcType=VARCHAR}, #{specification,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="org.javaboy.vhr.model.GasEqu">
+        insert into gasequs_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="code != null and code != ''">code,</if>
+            <if test="processArea != null and processArea != ''">processArea,</if>
+            <if test="pressureLevel != null and pressureLevel != ''">pressureLevel,</if>
+            <if test="specification != null and specification != ''">specification,</if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id,jdbcType=INTEGER},</if>
+            <if test="name != null and name != ''">#{name,jdbcType=VARCHAR},</if>
+            <if test="code != null and code != ''">#{code,jdbcType=VARCHAR},</if>
+            <if test="processArea != null and processArea != ''">#{processArea,jdbcType=VARCHAR},</if>
+            <if test="pressureLevel != null and pressureLevel != ''">#{pressureLevel,jdbcType=VARCHAR},</if>
+            <if test="specification != null and specification != ''">#{specification,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.javaboy.vhr.model.GasEqu">
+        update gasequs_info
+        <set>
+            <if test="name != null and name != ''">name=#{name,jdbcType=VARCHAR},</if>
+            <if test="code != null and code != ''">code=#{code,jdbcType=VARCHAR},</if>
+            <if test="processArea != null and processArea != ''">processArea=#{processArea,jdbcType=VARCHAR},</if>
+            <if test="pressureLevel != null and pressureLevel != ''">pressureLevel=#{pressureLevel,jdbcType=VARCHAR},</if>
+            <if test="specification != null and specification != ''">specification=#{specification,jdbcType=VARCHAR},</if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.javaboy.vhr.model.GasEqu">
+        update gasequs_info
+        set name=#{name,jdbcType=VARCHAR},code=#{code,jdbcType=VARCHAR},processArea=#{processArea,jdbcType=VARCHAR},pressureLevel=#{pressureLevel,jdbcType=VARCHAR},specification=#{specification,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>
