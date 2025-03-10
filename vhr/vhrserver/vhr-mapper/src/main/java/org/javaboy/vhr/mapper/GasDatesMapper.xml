@@ -16,7 +16,11 @@
         INSERT INTO GasDates_info (unique_name, original_name, upload_date, file_path, file_extension, uploader_id)
         VALUES (#{uniqueName,jdbcType=VARCHAR}, #{originalName,jdbcType=VARCHAR}, #{uploadDate,jdbcType=DATE}, #{filePath,jdbcType=VARCHAR}, #{fileExtension,jdbcType=VARCHAR}, #{uploaderId,jdbcType=VARCHAR});
     </insert>
-
+    <!--根据序号id删除-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from gasdates_info
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
     <!--按页查询-->
     <select id="getGasDatesByPage" resultMap="BaseResultMap">
         SELECT * FROM gasdates_info

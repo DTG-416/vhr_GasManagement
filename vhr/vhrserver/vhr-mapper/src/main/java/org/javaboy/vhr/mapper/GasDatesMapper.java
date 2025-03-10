@@ -22,5 +22,7 @@ public interface GasDatesMapper {
                   @Param("beginNum") Integer beginNum,
                   @Param("endNum") Integer endNum,
                   @Param("DateScope") Date[] DateScope);
+
+    int deleteByPrimaryKey(Integer id);
 }
 

@@ -36,6 +36,10 @@ public class GasService {
         return bean;
     }
 
+    //删除
+    public Integer deleteGasDataByid(Integer id) {
+        return gasDatesMapper.deleteByPrimaryKey(id);
+    }
     @Autowired
     GasEquManageMapper deviceManageMapper;
 

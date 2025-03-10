@@ -1,6 +1,7 @@
 package org.javaboy.vhr.controller.gas;
 
 import org.javaboy.vhr.model.GasDateInfo;
+import org.javaboy.vhr.model.RespBean;
 import org.javaboy.vhr.model.RespPageBean;
 import org.javaboy.vhr.service.GasService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +108,26 @@ public class GasBasicController {
         }
     }
 
+    @DeleteMapping("/delete")
+    public RespBean deleteGasDataByEid(@RequestParam Integer id,
+                                       @RequestParam String filePath,
+                                       @RequestParam String uniqueName) {
+        if (gasService.deleteGasDataByid(id) == 1) {
+            // 删除物理文件
+            Path fileToDelete = Paths.get(filePath, uniqueName);
+            try {
+                Files.deleteIfExists(fileToDelete);
+                return RespBean.ok("删除成功!");
+            } catch (IOException e) {
+                // 处理文件删除异常
+                e.printStackTrace();
+                return RespBean.error("文件删除失败: " + e.getMessage());
+            }
+
+        }
+
+        return RespBean.error("删除失败!");
+    }
     //单个文件下载
     @GetMapping("/download")
     public ResponseEntity<InputStreamResource> downloadFile(
