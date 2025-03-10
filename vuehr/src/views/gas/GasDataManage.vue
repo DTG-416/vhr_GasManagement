@@ -271,12 +271,16 @@ export default {
     },
     /***************数据库查询*********************/
     deleteEmp(data) {
-      this.$confirm('此操作将永久删除【' + data.name + '】, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除【' + data.originalName + '】, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteRequest("/employee/basic/" + data.id).then(resp => {
+        this.deleteRequest("/gas/basic/delete",{
+          id:data.id,
+          filePath: data.filePath,
+          uniqueName:data.uniqueName
+        }).then(resp => {
           if (resp) {
             this.initGasDates();
           }
@@ -372,11 +376,14 @@ export default {
           await this.downloadFile(this.multipleSelection[0]); // 处理单个文件下载
         } else {
           // 定义一个空数组来保存流的所有数
-          await this.postRequest("/gas/basic/batchDownload", this.multipleSelection, "blob").then(
-              response => {
-                const blob = response.data;
-                // 创建下载链接并触发下载
-                this.$saveAs(blob, "batch_download.zip");
+          await this.postRequest("/gas/basic/batchDownload", this.multipleSelection, "blob")
+              .then((response) => {
+                const blob = new Blob([response.data], { type: response.headers['content-type'] });
+                const fileName = getFileNameFromHeader(response.headers);
+                this.$save(blob, "batch_download.zip"); // 使用 FileSaver.js 进行保存
+              })
+              .catch((error) => {
+                console.error('下载失败', error);
               });
         }
       } catch (error) {
